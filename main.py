@@ -117,7 +117,7 @@ class FormularioPersona(BoxLayout):
             self.mostrar_popup_error('Por favor, completa todos los campos.')
             return
         
-        if not nombre.isalpha():
+        if not nombre.replace(" ", "").isalpha():
             self.mostrar_popup_error('Por favor, ingresa un nombre válido.')
             return
         
