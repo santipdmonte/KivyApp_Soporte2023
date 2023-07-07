@@ -57,7 +57,7 @@ class BaseDeDatos:
         return personas
 
 class FormularioPersona(BoxLayout):
-    def __init__(self, base_datos, lista_personas, **kwargs):
+    def __init__(self, base_datos, lista_personas,**kwargs):
         super(FormularioPersona, self).__init__(**kwargs)
         self.base_datos = base_datos
         self.lista_personas = lista_personas
@@ -105,7 +105,7 @@ class FormularioPersona(BoxLayout):
     def guardar_persona(self, *args):
         nombre = self.entrada_nombre.text
         edad = self.entrada_edad.text
-        sexo = self.sexo_seleccionado
+        sexo = self.spinner_sexo.text
 
         if not nombre or not edad or not sexo:
             self.mostrar_popup_error('Por favor, completa todos los campos.')
@@ -120,10 +120,11 @@ class FormularioPersona(BoxLayout):
             return
 
         persona = Persona(nombre, int(edad), sexo)
+
         if True:
             self.base_datos.insertar_persona(persona)
         else:
-            self.base-datos.actualizar_persona(persona)
+            self.base-datos.actualizar_persona()
 
         self.lista_personas.actualizar_lista()
 
@@ -182,7 +183,7 @@ class ListaPersonas(BoxLayout):
             self.add_widget(fila)
 
     def editar_persona(self, persona):
-        formulario = FormularioPersona(self.base_datos, self, False)
+        formulario = FormularioPersona(self.base_datos, self)
         formulario.entrada_nombre.text = persona.nombre
         formulario.entrada_edad.text = str(persona.edad)
         formulario.sexo_seleccionado = 'Masculino' if persona.sexo == 'M' else 'Femenino'
@@ -209,7 +210,7 @@ class MainApp(App):
         layout.add_widget(titulo)
 
         lista_personas = ListaPersonas(base_datos)
-        formulario = FormularioPersona(base_datos, lista_personas, True)
+        formulario = FormularioPersona(base_datos, lista_personas)
 
         layout.add_widget(formulario)
         layout.add_widget(lista_personas)
