@@ -5,6 +5,7 @@ from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
+from kivy.uix.gridlayout import GridLayout
 
 class Persona:
     def __init__(self, nombre, edad, sexo):
@@ -138,16 +139,20 @@ class ListaPersonas(BoxLayout):
 
         personas = self.base_datos.obtener_todas_las_personas()
         for persona in personas:
-            etiqueta_persona = Label(text=f'{persona.nombre}, {persona.edad}, {persona.sexo}')
-            self.add_widget(etiqueta_persona)
+            fila = GridLayout(cols=5, size_hint=(1, None), height=30, spacing=10)
 
-            boton_editar = Button(text='Editar')
+            etiqueta_persona = Label(text=f'Nombre: {persona.nombre}  |  Edad: {persona.edad}  |  Genero: {"Masculio" if persona.sexo == "M" else "Femenino"}')
+            fila.add_widget(etiqueta_persona)
+
+            boton_editar = Button(text='Editar', size_hint=(0.2, 1))
             boton_editar.bind(on_release=lambda btn, persona=persona: self.editar_persona(persona))
-            self.add_widget(boton_editar)
+            fila.add_widget(boton_editar)
 
-            boton_eliminar = Button(text='Eliminar')
+            boton_eliminar = Button(text='Eliminar', size_hint=(0.2, 1))
             boton_eliminar.bind(on_release=lambda btn, id_persona=persona.id: self.eliminar_persona(id_persona))
-            self.add_widget(boton_eliminar)
+            fila.add_widget(boton_eliminar)
+
+            self.add_widget(fila)
 
     def editar_persona(self, persona):
         formulario = FormularioPersona(self.base_datos, self)
@@ -169,7 +174,7 @@ class MainApp(App):
 
     def build(self):
         base_datos = BaseDeDatos(self.nombre_db)
-        layout = BoxLayout(orientation='vertical', spacing=10)
+        layout = BoxLayout(orientation='vertical', spacing=10, padding=20)
 
         lista_personas = ListaPersonas(base_datos)
         layout.add_widget(lista_personas)
