@@ -112,7 +112,8 @@ class FormularioPersona(BoxLayout):
         except: 
             id = None
 
-        if not nombre or not edad or not sexo:
+        print(sexo)
+        if not nombre or not edad or sexo not in self.spinner_sexo.values:
             self.mostrar_popup_error('Por favor, completa todos los campos.')
             return
         
@@ -173,7 +174,7 @@ class ListaPersonas(BoxLayout):
         for persona in personas:
             fila = GridLayout(cols=5, size_hint=(1, None), height=30, spacing=10)
 
-            etiqueta_persona = Label(text=f'Nombre: {persona.nombre}  |  Edad: {persona.edad}  |  Genero: {"Masculio" if persona.sexo == "M" else "Femenino"}')
+            etiqueta_persona = Label(text=f'Nombre: {persona.nombre}  |  Edad: {persona.edad}  |  Genero: {persona.sexo}')
             fila.add_widget(etiqueta_persona)
 
             boton_editar = Button(text='Editar', size_hint=(0.2, 1), background_color=get_color_from_hex('#0000FF'))
@@ -190,8 +191,8 @@ class ListaPersonas(BoxLayout):
         formulario = FormularioPersona(self.base_datos, self)
         formulario.entrada_nombre.text = persona.nombre
         formulario.entrada_edad.text = str(persona.edad)
-        formulario.sexo_seleccionado = 'Masculino' if persona.sexo == 'M' else 'Femenino'
-        formulario.spinner_sexo.text = formulario.sexo_seleccionado
+        # formulario.sexo_seleccionado = persona.sexo
+        formulario.spinner_sexo.text = persona.sexo
         formulario.id = persona.id
 
         self.clear_widgets()
