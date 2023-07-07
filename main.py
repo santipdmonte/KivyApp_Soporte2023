@@ -57,7 +57,7 @@ class BaseDeDatos:
         return personas
 
 class FormularioPersona(BoxLayout):
-    def __init__(self, base_datos, lista_personas,**kwargs):
+    def __init__(self, base_datos, lista_personas, **kwargs):
         super(FormularioPersona, self).__init__(**kwargs)
         self.base_datos = base_datos
         self.lista_personas = lista_personas
@@ -65,6 +65,7 @@ class FormularioPersona(BoxLayout):
         self.orientation = 'vertical'
         self.spacing = 10
 
+        # Nombre Input
         self.label_nombre = Label(text='Nombre:', size_hint_x=None, width=100, halign='left')
         self.entrada_nombre = TextInput(multiline=False, hint_text='Ingrese su nombre:')
         self.nombre_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height=35, spacing=10)
@@ -73,6 +74,7 @@ class FormularioPersona(BoxLayout):
 
         self.add_widget(self.nombre_layout)
 
+        # Edad Input
         self.label_edad = Label(text='Edad:', size_hint_x=None, width=100, halign='left')
         self.slider_edad = Slider(min=1, max=120, value=18, size_hint=(0.6, None), height=30)
         self.entrada_edad = TextInput(multiline=False, input_filter="float", size_hint_x=None, width=55)
@@ -85,6 +87,7 @@ class FormularioPersona(BoxLayout):
 
         self.add_widget(self.edad_layout)
 
+        # Genero Input
         self.label_sexo = Label(text='Género:', size_hint_x=None, width=30, halign='left', height=35)
         self.spinner_sexo = Spinner(text='Género', values=['Masculino', 'Femenino'], size_hint=(None, None), size=(100, 30))
 
@@ -121,10 +124,7 @@ class FormularioPersona(BoxLayout):
 
         persona = Persona(nombre, int(edad), sexo)
 
-        if True:
-            self.base_datos.insertar_persona(persona)
-        else:
-            self.base-datos.actualizar_persona()
+        self.base_datos.insertar_persona(persona)
 
         self.lista_personas.actualizar_lista()
 
