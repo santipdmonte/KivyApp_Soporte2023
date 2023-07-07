@@ -6,6 +6,10 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.spinner import Spinner
+from kivy.uix.slider import Slider
+from kivy.utils import get_color_from_hex
 
 class Persona:
     def __init__(self, nombre, edad, sexo):
@@ -59,56 +63,70 @@ class FormularioPersona(BoxLayout):
         self.lista_personas = lista_personas
 
         self.orientation = 'vertical'
-        self.spacing = 10
+        self.spacing = 5
 
-        self.label_nombre = Label(text='Nombre:')
-        self.entrada_nombre = TextInput(multiline=False)
-        self.add_widget(self.label_nombre)
-        self.add_widget(self.entrada_nombre)
+        self.label_nombre = Label(text='Nombre:', size_hint_x=None, width=100, halign='left')
+        self.entrada_nombre = TextInput(multiline=False, hint_text='Nombre')
+        self.nombre_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height=30, spacing=10)
+        self.nombre_layout.add_widget(self.label_nombre)
+        self.nombre_layout.add_widget(self.entrada_nombre)
 
-        self.label_edad = Label(text='Edad:')
-        self.entrada_edad = TextInput(multiline=False, input_filter= "float")
-        self.add_widget(self.label_edad)
-        self.add_widget(self.entrada_edad)
+        self.add_widget(self.nombre_layout)
 
-        self.label_sexo = Label(text='Sexo (M/F):')
-        self.entrada_sexo = TextInput(multiline=False)
-        self.add_widget(self.label_sexo)
-        self.add_widget(self.entrada_sexo)
+        self.label_edad = Label(text='Edad:', size_hint_x=None, width=100, halign='left')
+        self.slider_edad = Slider(min=1, max=120, value=18)
+        self.entrada_edad = TextInput(multiline=False, input_filter="float", size_hint_x=None, width=55)
+        self.slider_edad.bind(value=self.actualizar_entrada_edad)
 
-        self.boton_guardar = Button(text='Guardar')
+        self.edad_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height=30, spacing=10)
+        self.edad_layout.add_widget(self.label_edad)
+        self.edad_layout.add_widget(self.entrada_edad)
+
+        self.add_widget(self.edad_layout)
+        self.add_widget(self.slider_edad)
+
+        self.label_sexo = Label(text='Género:', size_hint_x=None, width=30, halign='left')
+        self.spinner_sexo = Spinner(text='Género', values=['Masculino', 'Femenino'], size_hint=(None, None), size=(100, 40))
+        self.spinner_sexo.bind(text=self.actualizar_sexo)
+
+        self.label_sexo.size_hint_x = None
+        self.label_sexo.width = 100
+        self.label_sexo.halign = 'left'
+
+        self.main_layout = BoxLayout(orientation='horizontal', spacing=10)
+        self.main_layout.add_widget(self.label_sexo)
+        self.main_layout.add_widget(self.spinner_sexo)
+        self.add_widget(self.main_layout)
+
+        self.boton_guardar = Button(text='Guardar', background_color=get_color_from_hex('#00FF00'))
         self.boton_guardar.bind(on_release=self.guardar_persona)
         self.add_widget(self.boton_guardar)
 
     def guardar_persona(self, *args):
         nombre = self.entrada_nombre.text
         edad = self.entrada_edad.text
-        sexo = self.entrada_sexo.text
+        sexo = self.sexo_seleccionado
 
         if not nombre or not edad or not sexo:
             self.mostrar_popup_error('Por favor, completa todos los campos.')
             return
         
         if not nombre.isalpha():
-            self.mostrar_popup_error('Por favor, ingresa una nombre valido.')
+            self.mostrar_popup_error('Por favor, ingresa un nombre válido.')
             return
         
         if int(edad) >= 150 or int(edad) <= 0:
-            self.mostrar_popup_error('Por favor, ingresa una edad valida.')
-            return
-        
-        if not (sexo.upper() == 'M' or sexo.upper() == 'F'):
-            self.mostrar_popup_error('Sexo inválido. Ingresar M o F.')
+            self.mostrar_popup_error('Por favor, ingresa una edad válida.')
             return
 
-        persona = Persona(nombre, int(edad), sexo.upper())
+        persona = Persona(nombre, int(edad), sexo)
         self.base_datos.insertar_persona(persona)
 
         self.lista_personas.actualizar_lista()
 
         self.entrada_nombre.text = ''
         self.entrada_edad.text = ''
-        self.entrada_sexo.text = ''
+        self.spinner_sexo.text = 'Género'
 
         self.mostrar_popup_exito('Persona guardada exitosamente.')
 
@@ -123,6 +141,12 @@ class FormularioPersona(BoxLayout):
                       content=Label(text=mensaje),
                       size_hint=(None, None), size=(400, 200))
         popup.open()
+    
+    def actualizar_sexo(self, spinner, text):
+        self.sexo_seleccionado = text
+
+    def actualizar_entrada_edad(self, instance, value):
+        self.entrada_edad.text = str(int(value))
 
 class ListaPersonas(BoxLayout):
     def __init__(self, base_datos, **kwargs):
@@ -144,11 +168,11 @@ class ListaPersonas(BoxLayout):
             etiqueta_persona = Label(text=f'Nombre: {persona.nombre}  |  Edad: {persona.edad}  |  Genero: {"Masculio" if persona.sexo == "M" else "Femenino"}')
             fila.add_widget(etiqueta_persona)
 
-            boton_editar = Button(text='Editar', size_hint=(0.2, 1))
+            boton_editar = Button(text='Editar', size_hint=(0.2, 1), background_color=get_color_from_hex('#0000FF'))
             boton_editar.bind(on_release=lambda btn, persona=persona: self.editar_persona(persona))
             fila.add_widget(boton_editar)
 
-            boton_eliminar = Button(text='Eliminar', size_hint=(0.2, 1))
+            boton_eliminar = Button(text='Eliminar', size_hint=(0.2, 1), background_color=get_color_from_hex('#FF0000'))
             boton_eliminar.bind(on_release=lambda btn, id_persona=persona.id: self.eliminar_persona(id_persona))
             fila.add_widget(boton_eliminar)
 
@@ -158,7 +182,8 @@ class ListaPersonas(BoxLayout):
         formulario = FormularioPersona(self.base_datos, self)
         formulario.entrada_nombre.text = persona.nombre
         formulario.entrada_edad.text = str(persona.edad)
-        formulario.entrada_sexo.text = persona.sexo
+        formulario.sexo_seleccionado = 'Masculino' if persona.sexo == 'M' else 'Femenino'
+        formulario.spinner_sexo.text = formulario.sexo_seleccionado
 
         self.clear_widgets()
         self.add_widget(formulario)
