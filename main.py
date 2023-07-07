@@ -55,8 +55,6 @@ class BaseDeDatos:
             persona.id = fila[0]
             personas.append(persona)
         return personas
-    
-from kivy.graphics import Color, Rectangle
 
 class FormularioPersona(BoxLayout):
     def __init__(self, base_datos, lista_personas, **kwargs):
@@ -65,54 +63,42 @@ class FormularioPersona(BoxLayout):
         self.lista_personas = lista_personas
 
         self.orientation = 'vertical'
-        self.spacing = 5
-
-        # Estilos del contenedor
-        with self.canvas:
-            Color(rgb=get_color_from_hex('#ECECEC'))  # Color de fondo del contenedor en hexadecimal
-            self.rect = Rectangle(pos=self.pos, size=self.size)
-
-        self.bind(pos=self.update_rectangle, size=self.update_rectangle)
+        self.spacing = 10
 
         self.label_nombre = Label(text='Nombre:', size_hint_x=None, width=100, halign='left')
         self.entrada_nombre = TextInput(multiline=False, hint_text='Ingrese su nombre:')
-        self.nombre_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height=30, spacing=10)
+        self.nombre_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height=35, spacing=10)
         self.nombre_layout.add_widget(self.label_nombre)
         self.nombre_layout.add_widget(self.entrada_nombre)
 
         self.add_widget(self.nombre_layout)
 
         self.label_edad = Label(text='Edad:', size_hint_x=None, width=100, halign='left')
-        self.slider_edad = Slider(min=1, max=120, value=18)
+        self.slider_edad = Slider(min=1, max=120, value=18, size_hint=(0.6, None), height=30)
         self.entrada_edad = TextInput(multiline=False, input_filter="float", size_hint_x=None, width=55)
         self.slider_edad.bind(value=self.actualizar_entrada_edad)
 
-        self.edad_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height=30, spacing=10)
+        self.edad_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height=35, spacing=10)
         self.edad_layout.add_widget(self.label_edad)
         self.edad_layout.add_widget(self.entrada_edad)
+        self.edad_layout.add_widget(self.slider_edad)
 
         self.add_widget(self.edad_layout)
-        self.add_widget(self.slider_edad)
 
-        self.label_sexo = Label(text='Género:', size_hint_x=None, width=30, halign='left')
-        self.spinner_sexo = Spinner(text='Género', values=['Masculino', 'Femenino'], size_hint=(None, None), size=(100, 40))
-        self.spinner_sexo.background_color = [0.8, 0.8, 0.8, 1]  # Cambia el color de fondo a gris claro
-        self.spinner_sexo.color = [0, 0, 0, 1]  # Cambia el color del texto seleccionado a negro
-        self.spinner_sexo.background_color = [1, 1, 1, 1]  # Cambia el color de fondo a blanco
-        self.spinner_sexo.option_cls.background_color = [1, 1, 1, 1]  # Cambia el color del fondo del texto desplegable a blanco
-        self.spinner_sexo.option_cls.color = [0, 0, 0, 1]  # Cambia el color del texto desplegable a negro
-        self.spinner_sexo.bind(text=self.actualizar_sexo)
+        self.label_sexo = Label(text='Género:', size_hint_x=None, width=30, halign='left', height=35)
+        self.spinner_sexo = Spinner(text='Género', values=['Masculino', 'Femenino'], size_hint=(None, None), size=(100, 30))
 
         self.label_sexo.size_hint_x = None
         self.label_sexo.width = 100
         self.label_sexo.halign = 'left'
 
-        self.main_layout = BoxLayout(orientation='horizontal', spacing=10)
-        self.main_layout.add_widget(self.label_sexo)
-        self.main_layout.add_widget(self.spinner_sexo)
-        self.add_widget(self.main_layout)
+        self.spinner_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height=35, spacing=10)
+        self.spinner_layout.add_widget(self.label_sexo)
+        self.spinner_layout.add_widget(self.spinner_sexo)
 
-        self.boton_guardar = Button(text='Guardar', background_color=get_color_from_hex('#00FF00'), size_hint=(None, None), size=(500, 50), pos_hint={'center_x': 0.5, 'center_y': 0.5})
+        self.add_widget(self.spinner_layout)
+
+        self.boton_guardar = Button(text='Guardar', background_color=get_color_from_hex('#00FF00'), size_hint=(None, None), size=(300, 50), pos_hint={'center_x': 0.5, 'center_y': 0.5})
         self.boton_guardar.bind(on_release=self.guardar_persona)
         self.add_widget(self.boton_guardar)
 
@@ -134,7 +120,10 @@ class FormularioPersona(BoxLayout):
             return
 
         persona = Persona(nombre, int(edad), sexo)
-        self.base_datos.insertar_persona(persona)
+        if True:
+            self.base_datos.insertar_persona(persona)
+        else:
+            self.base-datos.actualizar_persona(persona)
 
         self.lista_personas.actualizar_lista()
 
@@ -193,7 +182,7 @@ class ListaPersonas(BoxLayout):
             self.add_widget(fila)
 
     def editar_persona(self, persona):
-        formulario = FormularioPersona(self.base_datos, self)
+        formulario = FormularioPersona(self.base_datos, self, False)
         formulario.entrada_nombre.text = persona.nombre
         formulario.entrada_edad.text = str(persona.edad)
         formulario.sexo_seleccionado = 'Masculino' if persona.sexo == 'M' else 'Femenino'
@@ -220,7 +209,7 @@ class MainApp(App):
         layout.add_widget(titulo)
 
         lista_personas = ListaPersonas(base_datos)
-        formulario = FormularioPersona(base_datos, lista_personas)
+        formulario = FormularioPersona(base_datos, lista_personas, True)
 
         layout.add_widget(formulario)
         layout.add_widget(lista_personas)
