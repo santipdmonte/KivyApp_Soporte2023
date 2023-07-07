@@ -14,7 +14,7 @@ TP Kivy (entregar antes del 14/07/2023):
 
 Para funcionar instalar sqlite3 y kivy
 
-pip install pysqlite3
+Sqlite3: `pip install pysqlite3`
 
-Windows:
-pip install kivy
+[Windows]
+Kivy: `pip install kivy`
