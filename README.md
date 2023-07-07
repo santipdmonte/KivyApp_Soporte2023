@@ -11,3 +11,10 @@ TP Kivy (entregar antes del 14/07/2023):
 - Se debe emplear lo más posible el lenguaje intermedio KV.
 
 2) Elegir un Widgets de UX complejo y de comportamiento y armar un ejemplo de uso sencillo y subirlo al GITHUB (uno por grupo).
+
+Para funcionar instalar sqlite3 y kivy
+
+pip install pysqlite3
+
+Windows:
+pip install kivy
