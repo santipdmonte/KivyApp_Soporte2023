@@ -18,3 +18,8 @@ Sqlite3: `pip install pysqlite3`
 
 [Windows]
 Kivy: `pip install kivy`
+
+
+
+![WhatsApp Image 2023-07-12 at 8 48 07 AM](https://github.com/santipdmonte/KivyApp_Soporte2023/assets/102166963/6eea5bbf-3f37-4850-bb93-f6bbd2e8c866)
+
