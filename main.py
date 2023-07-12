@@ -11,6 +11,9 @@ from kivy.uix.spinner import Spinner
 from kivy.uix.slider import Slider
 from kivy.utils import get_color_from_hex
 
+# Para empaquetar el archivo en APK
+from kivy.lang import Builder
+
 class Persona:
     def __init__(self, nombre, edad, sexo):
         self.nombre = nombre
